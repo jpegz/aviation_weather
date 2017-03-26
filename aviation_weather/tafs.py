@@ -2,11 +2,11 @@
 import argparse
 from .tools import aviation_xml, aviation_weather
 
-def tafs_xml(station, hours_before_now: int=24, most_recent: bool=True):
+def tafs_xml(station, hours_before_now=24, most_recent=True):
     """ get tafs from aviationweather.gov """
     return aviation_xml("tafs", station, hours_before_now, most_recent)
 
-def tafs(station, hours_before_now: int=24, most_recent: bool=True):
+def tafs(station, hours_before_now=24, most_recent=True):
     """ get tafs from aviationweather.gov """
     return aviation_weather('tafs', station, hours_before_now, most_recent)
 
