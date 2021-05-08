@@ -76,17 +76,3 @@ def parse_sky_condition(sky_cond):
         sky_cond_list.append(text)
     sky_cond_readable = ', '.join(sky_cond_list)
     return sky_cond_readable
-
-
-if __name__ == "__main__":
-    text = aviation_weather(
-        'metars', 'TJBQ', hours_before_now=24, most_recent=True, return_readable=True)
-    print(text)
-    print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
-    text = aviation_weather(
-        'metars', 'RJAA', hours_before_now=24, most_recent=True, return_readable=True)
-    print(text)
-    print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
-    text = aviation_weather(
-        'metars', 'CYYZ', hours_before_now=24, most_recent=True, return_readable=True)
-    print(text)
