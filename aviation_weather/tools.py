@@ -69,7 +69,10 @@ def parse_sky_condition(sky_cond):
     for lvl in sky_cond:
         altitude = lvl.get('@cloud_base_ft_agl', '')
         sky_cover = lvl.get('@sky_cover', '')
-        text = f'{altitude}AGL: {sky_cover}'
+        altitude_text = f'{altitude}'
+        if altitude_text != '':
+            altitude_text += "AGL:"
+        text = f'{altitude_text} {sky_cover}'
         sky_cond_list.append(text)
     sky_cond_readable = ', '.join(sky_cond_list)
     return sky_cond_readable
