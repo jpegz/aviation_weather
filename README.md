@@ -98,9 +98,100 @@ This method is particularly useful when managing multiple project dependencies o
 ## Running the Project
 
 ### Basic Usage
-After installation, you can run the project using:
+After installation, you can run the project using the command-line interface:
+
 ```bash
-python -m aviation_weather
+python -m aviation_weather [data_source] [stations...] [options]
+```
+
+#### Required Arguments
+- `data_source`: Type of weather data to retrieve (choices: `metars`, `tafs`)
+- `stations`: One or more station codes (e.g., KJFK, KLAX)
+
+#### Optional Arguments
+- `--hours-before-now`: Number of hours of history to retrieve (default: 24)
+- `--most-recent`, `-r`: Only return the most recent data for each station (default: True)
+- `--text`, `-t`: Display results in human-readable text format (default: True)
+
+#### Examples
+
+1. Get current METAR for JFK airport:
+```bash
+python -m aviation_weather metars KJFK
+```
+
+2. Get TAFs for multiple airports:
+```bash
+python -m aviation_weather tafs KJFK KLAX KBOS
+```
+
+3. Get historical METARs for the last 48 hours:
+```bash
+python -m aviation_weather metars KJFK --hours-before-now 48
+```
+
+### Python API Usage
+For development or integration into other Python projects, you can import and use the modules directly:
+
+```python
+from aviation_weather import tools
+
+# Get METAR data for JFK airport
+metar = tools.aviation_weather(
+    data_source='metars',
+    station='KJFK',
+    hours_before_now=24,
+    most_recent=True,
+    return_readable=True
+)
+print(metar)
+
+# Get TAF data for multiple stations
+taf = tools.aviation_weather(
+    data_source='tafs',
+    station='KJFK,KLAX',
+    hours_before_now=24,
+    most_recent=True,
+    return_readable=True
+)
+print(taf)
+```
+
+### Output Format
+When using the `--text` option or `return_readable=True`, the output includes:
+- Station information (ID, latitude, longitude)
+- Temperature and dewpoint (in Celsius)
+- Wind conditions (direction and speed)
+- Visibility (in statute miles)
+- Altimeter setting
+- Sea level pressure
+- Sky conditions
+- Flight category
+- METAR type
+- Station elevation
+
+Example output:
+```
+Station: KJFK
+Latitude: 40.63
+Longitude: -73.77
+Temperature: 15.0
+Dewpoint: 12.0
+Wind direction: 180
+Wind speed: 10
+Visibility: 10.0
+Altimeter: 29.92
+Pressure: 1013.2
+Sky condition: 5000AGL: BKN
+Flight category: VFR
+Metar Type: METAR
+Elevation: 13
+```
+
+### API Endpoints
+The package uses the aviationweather.gov ADDS (Aviation Digital Data Service) API to retrieve data. The base URL is:
+```
+https://aviationweather.gov/adds/dataserver_current/httpparam
 ```
 
 ### Development Mode
