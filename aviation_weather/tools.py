@@ -33,26 +33,43 @@ def xml_to_readable(xml_page, data_source):
     response = odict['response']['data']
     if data_source == 'metars':
         info = response['METAR']
+        # Handle both single METAR and list of METARs
+        if isinstance(info, list):
+            info = info[0]  # Take the most recent one
+        
+        # Handle visibility with '+' symbol
+        visibility = info.get('visibility_statute_mi', '')
+        if visibility.endswith('+'):
+            visibility = visibility.rstrip('+') + '+'
+        
+        # Handle wind information
+        wind_info = f"{info.get('wind_dir_degrees', '')}° at {info.get('wind_speed_kt', '')} kt"
+        if info.get('wind_gust_kt'):
+            wind_info += f" (gusts {info.get('wind_gust_kt')} kt)"
+
         sky_cond_readable = parse_sky_condition(info.get('sky_condition', None))
         altimeter_rounded = round(float(info.get('altim_in_hg', '-1000')), 2)
         info_list = [f"Station: {info.get('station_id', '')}",
+                     f"Observation Time: {info.get('observation_time', '')}",
                      f"Latitude: {info.get('latitude', '')}",
                      f"Longitude: {info.get('longitude', '')}",
-                     f"Temperature: {info.get('temp_c', '')}",
-                     f"Dewpoint: {info.get('dewpoint_c', '')}",
-                     f"Wind direction: {info.get('wind_dir_degrees', '')}",
-                     f"Wind speed: {info.get('wind_speed_kt', '')}",
-                     f"Visibility: {info.get('visibility_statute_mi', '')}",
-                     f"Altimeter: {altimeter_rounded}",
-                     f"Pressure: {info.get('sea_level_pressure_mb', '')}",
-                     f"Sky condition: {sky_cond_readable}",
+                     f"Temperature: {info.get('temp_c', '')}°C",
+                     f"Dewpoint: {info.get('dewpoint_c', '')}°C",
+                     f"Wind: {wind_info}",
+                     f"Visibility: {visibility} statute miles",
+                     f"Altimeter: {altimeter_rounded} inHg",
+                     f"Pressure: {info.get('sea_level_pressure_mb', '')} mb",
+                     f"Sky conditions: {sky_cond_readable}",
                      f"Flight category: {info.get('flight_category', '')}",
                      f"Metar Type: {info.get('metar_type', '')}",
-                     f"Elevation: {info.get('elevation_m', '')}"]
+                     f"Elevation: {info.get('elevation_m', '')}m",
+                     f"Raw: {info.get('raw_text', '')}"]
         formatted_info = '\n'.join(info_list)
     elif data_source == 'tafs':
         info = response['TAF']
-        formatted_info = info
+        if isinstance(info, list):
+            info = info[0]  # Take the most recent one
+        formatted_info = info.get('raw_text', info)
     else:
         raise ValueError(f'Unknown data source {data_source}')
 
