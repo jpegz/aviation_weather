@@ -6,11 +6,11 @@ import xmltodict
 
 def aviation_xml(data_source, station, hours_before_now=24, most_recent=True):
     """ get metars or tafs from aviationweather.gov """
-    uri = ('https://aviationweather.gov/adds/dataserver_current/httpparam?dataSource={0}'+
-           '&requestType=retrieve&format=xml&stationString={1}&hoursBeforeNow={2}' +
-           '&mostRecentForEachStation={3}').format(data_source, station,
-                                                   hours_before_now, most_recent)
-    page = requests.get(uri)
+    uri = ('https://aviationweather.gov/api/data/dataserver?requestType=retrieve&dataSource={0}'+
+           '&stationString={1}&hoursBeforeNow={2}&format=xml' +
+           '&mostRecent={3}').format(data_source, station,
+                                    hours_before_now, most_recent)
+    page = requests.get(uri, headers={'accept': '*/*'})
     return page.content
 
 
