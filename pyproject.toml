@@ -1,0 +1,39 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "aviation_weather"
+version = "0.2.1"
+description = "Utility for getting aviation weather information"
+readme = "README.md"
+authors = [
+    { name = "José Peguero", email = "jose@pegosaur.us" },
+    { name = "Arnaldo Pereira", email = "aepereira@gmail.com" },
+]
+license = { text = "MIT" }
+requires-python = ">=3.7"
+dependencies = [
+    "lxml",
+    "requests",
+    "xmltodict",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+[project.urls]
+Homepage = "http://github.com/jpegz/jpegz_aviation_weather"
+Repository = "http://github.com/jpegz/jpegz_aviation_weather.git"
+
+[tool.hatch.build.targets.wheel]
+packages = ["aviation_weather"] 
