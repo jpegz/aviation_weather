@@ -142,3 +142,23 @@ def two_metars():
 @pytest.fixture
 def taf_kjfk():
     return TAF_KJFK
+
+
+# Older record first, newer record second — deliberately reversed to verify
+# that most_recent picks by reportTime, not by position.
+METAR_KJFK_OLDER = {
+    **METAR_KJFK,
+    "reportTime": "2024-01-15T12:00:00.000Z",
+    "rawOb": "METAR KJFK 160351Z 19003KT 10SM FEW065 18/13 A2988",
+}
+METAR_KJFK_NEWER = {
+    **METAR_KJFK,
+    "reportTime": "2024-01-15T13:00:00.000Z",
+    "rawOb": "METAR KJFK 160451Z 19003KT 10SM FEW065 SCT170 BKN250 18/13 A2989",
+}
+
+
+@pytest.fixture
+def metars_out_of_order():
+    """Older record at index 0, newer at index 1 — reverse of API convention."""
+    return [METAR_KJFK_OLDER, METAR_KJFK_NEWER]
