@@ -53,6 +53,10 @@ def aviation_weather(
     records = _fetch_json(data_source, station, hours_before_now)
     if not records:
         return "" if return_readable else []
+    if most_recent:
+        # Sort explicitly rather than trusting API ordering.
+        # reportTime is ISO-8601 so lexicographic max is correct.
+        records = sorted(records, key=lambda r: r.get("reportTime") or "", reverse=True)
     if return_readable and most_recent:
         return _to_readable(records[0], data_source)
     raw_field = "rawOb" if data_source == "metar" else "rawTAF"

@@ -136,6 +136,18 @@ def test_aviation_weather_raw_most_recent(metar_kjfk):
 
 
 @rsps.activate
+def test_aviation_weather_most_recent_by_report_time_not_position(metars_out_of_order):
+    """most_recent must select the record with the latest reportTime,
+    not whichever record happens to be at index 0."""
+    rsps.add(rsps.GET, f"{BASE}/metar", json=metars_out_of_order)
+    result = aviation_weather("metar", "KJFK", most_recent=True)
+    assert len(result) == 1
+    # The newer record is at index 1 in the fixture — we must still get it.
+    from .conftest import METAR_KJFK_NEWER
+    assert result[0] == METAR_KJFK_NEWER["rawOb"]
+
+
+@rsps.activate
 def test_aviation_weather_raw_all_results(two_metars):
     rsps.add(rsps.GET, f"{BASE}/metar", json=two_metars)
     result = aviation_weather("metar", "KJFK,KLAX", most_recent=False)
