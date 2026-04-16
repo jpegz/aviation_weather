@@ -1,38 +1,19 @@
-"""Convenience module for getting TAFS information from AviationWeather.gov"""
+"""Convenience module for getting TAF information from AviationWeather.gov."""
 
-import argparse
+from __future__ import annotations
 
 from .tools import aviation_weather, aviation_xml
 
 
-def tafs_xml(station, hours_before_now=24, most_recent=True):
-    """get tafs from aviationweather.gov"""
-    return aviation_xml("tafs", station, hours_before_now, most_recent)
+def tafs_xml(
+    station: str, hours_before_now: int = 24, most_recent: bool = True
+) -> bytes:
+    """Fetch raw TAF XML from aviationweather.gov."""
+    return aviation_xml("taf", station, hours_before_now, most_recent)
 
 
-def tafs(station, hours_before_now=24, most_recent=True):
-    """get tafs from aviationweather.gov"""
-    return aviation_weather("tafs", station, hours_before_now, most_recent)
-
-
-if __name__ == "__main__":
-    PARSER = argparse.ArgumentParser(description="Get tafs for the specified stations")
-    PARSER.add_argument(
-        "--hours-before-now", required=False, default=24, help="hours before now"
-    )
-    PARSER.add_argument(
-        "--most-recent",
-        "-r",
-        required=False,
-        default=False,
-        action="store_true",
-        help="Only return most recent tafs for the stations",
-    )
-    PARSER.add_argument(
-        "stations", nargs="+", help="station code or short code for multiple stations"
-    )
-    ARGS = PARSER.parse_args()
-    STATIONS = ",".join(ARGS.stations)
-    RESULT = tafs(STATIONS, ARGS.hours_before_now, ARGS.most_recent)
-    if len(RESULT) > 0:
-        print("\n".join(RESULT))
+def tafs(
+    station: str, hours_before_now: int = 24, most_recent: bool = True
+) -> str | list[str]:
+    """Fetch TAFs from aviationweather.gov."""
+    return aviation_weather("taf", station, hours_before_now, most_recent)

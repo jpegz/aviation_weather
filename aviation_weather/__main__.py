@@ -1,51 +1,52 @@
-import argparse
-import os
-import sys
+from __future__ import annotations
 
-# Add the parent directory to sys.path when running directly
-if __name__ == "__main__" and __package__ is None:
-    file_path = os.path.abspath(os.path.dirname(__file__))
-    sys.path.insert(0, os.path.dirname(file_path))
-    __package__ = "aviation_weather"
+import argparse
 
 from .tools import aviation_weather
 
-PARSER = argparse.ArgumentParser(
-    description="Get metars or tafs for the specified stations"
-)
-PARSER.add_argument(
-    "--hours-before-now", required=False, default=24, help="hours before now"
-)
-PARSER.add_argument(
-    "--most-recent",
-    "-r",
-    required=False,
-    default=True,
-    action="store_true",
-    help="Only return most recent metars or tafs for the stations",
-)
-PARSER.add_argument("data_source", choices=["metars", "tafs"])
-PARSER.add_argument(
-    "--text",
-    "-t",
-    required=False,
-    default=True,
-    action="store_true",
-    help="display in human-readable text format",
-)
-PARSER.add_argument(
-    "stations", nargs="+", help="station code or short code for multiple stations"
-)
+
+def main() -> None:
+    parser = argparse.ArgumentParser(
+        description="Get metar or taf for the specified stations"
+    )
+    parser.add_argument("data_source", choices=["metar", "taf"])
+    parser.add_argument(
+        "stations",
+        nargs="+",
+        help="ICAO station code(s)",
+    )
+    parser.add_argument(
+        "--hours-before-now",
+        required=False,
+        default=24,
+        type=int,
+        help="How many hours back to search (default: 24)",
+    )
+    parser.add_argument(
+        "--all",
+        action="store_true",
+        default=False,
+        help="Return all results in the time window instead of only the most recent",
+    )
+    parser.add_argument(
+        "--text",
+        "-t",
+        action="store_true",
+        default=False,
+        help="Display in human-readable text format instead of raw",
+    )
+
+    args = parser.parse_args()
+    most_recent = not args.all
+    stations = ",".join(args.stations)
+    result = aviation_weather(
+        args.data_source, stations, args.hours_before_now, most_recent, args.text
+    )
+    if isinstance(result, list):
+        print("\n".join(result))
+    else:
+        print(result)
+
 
 if __name__ == "__main__":
-    ARGS = PARSER.parse_args()
-    STATIONS = ",".join(ARGS.stations)
-    RESULT = aviation_weather(
-        ARGS.data_source, STATIONS, ARGS.hours_before_now, ARGS.most_recent, ARGS.text
-    )
-    if ARGS.text:
-        print(RESULT)
-    elif len(RESULT) > 0:
-        print("\n".join(RESULT))
-    else:
-        raise ValueError("Error encountered outputting results.")
+    main()
