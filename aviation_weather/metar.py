@@ -1,7 +1,5 @@
 """Convenience module for getting METAR information from AviationWeather.gov."""
 
-from __future__ import annotations
-
 from .tools import aviation_weather, aviation_xml
 
 

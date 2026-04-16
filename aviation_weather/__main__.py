@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import argparse
 
 from .tools import aviation_weather
